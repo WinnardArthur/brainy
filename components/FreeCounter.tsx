@@ -35,7 +35,7 @@ const FreeCounter = ({ apiLimitCount = 0 }: FreeCounterProps) => {
             />
           </div>
           <Button
-            onClick={() => proModal.onOpen}
+            onClick={() => proModal.onOpen()}
             className="w-full"
             variant="premium"
           >

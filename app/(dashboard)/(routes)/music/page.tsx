@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageSquare, Music } from "lucide-react";
+import { Music } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChatCompletionRequestMessage } from "openai";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -16,8 +15,12 @@ import { formSchema } from "./constants";
 import { Button } from "@/components/ui/button";
 import { Empty } from "@/components/empty";
 import Loader from "@/components/loader";
+import { useProModal } from "@/hooks/use-pro-modal";
+
 
 const MusicPage = () => {
+  const proModal = useProModal();
+
   const [music, setMusic] = useState<string>();
 
   const router = useRouter();
@@ -41,7 +44,9 @@ const MusicPage = () => {
 
       form.reset();
     } catch (error: any) {
-      console.log(error);
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }

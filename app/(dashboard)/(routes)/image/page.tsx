@@ -7,6 +7,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import { Heading } from "@/components/heading";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -15,9 +16,6 @@ import { amountOptions, formSchema, resolutionOptions } from "./constants";
 import { Button } from "@/components/ui/button";
 import { Empty } from "@/components/empty";
 import Loader from "@/components/loader";
-import { cn } from "@/lib/utils";
-import { UserAvatar } from "@/components/user-avatar";
-import BotAvatar from "@/components/bot-avatar";
 import {
   Select,
   SelectContent,
@@ -26,9 +24,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardFooter } from "@/components/ui/card";
-import Image from "next/image";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const ImagePage = () => {
+  const proModal = useProModal();
+
   const [images, setImages] = useState<string[]>([]);
   const router = useRouter();
 
@@ -54,7 +54,9 @@ const ImagePage = () => {
       setImages(urls);
       form.reset();
     } catch (error: any) {
-      console.log(error);
+      if (error?.response?.status === 403) {
+        proModal.onOpen();
+      }
     } finally {
       router.refresh();
     }

@@ -22,6 +22,8 @@ export async function GET() {
       },
     });
 
+    // If user has already subscribed, 
+    // (user's subscription exists) open the billing page
     if (userSubscription && userSubscription.stripeCustomerId) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: userSubscription.stripeCustomerId,
@@ -31,6 +33,7 @@ export async function GET() {
       return new NextResponse(JSON.stringify({ url: stripeSession.url }));
     }
 
+    // Else open the checkout page
     const stripeSession = await stripe.checkout.sessions.create({
       success_url: settingsUrl,
       cancel_url: settingsUrl,
